@@ -6,8 +6,6 @@ const inventory = new mongoose.Schema({
     stock: Number
 }, {
     versionKey: false
-}, {
-    collection: 'inventory'
 })
 
-module.exports = mongoose.model('inventory', inventory);
+module.exports = mongoose.model('inventory', inventory, 'inventory');

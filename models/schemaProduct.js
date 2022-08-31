@@ -9,8 +9,6 @@ const products = new mongoose.Schema({
     price: Number
 }, {
     versionKey: false
-}, {
-    collection: 'products'
 })
 
-module.exports = mongoose.model('products', products);
+module.exports = mongoose.model('products', products, 'products');

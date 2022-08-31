@@ -18,9 +18,27 @@ action.get('/getSingleProduct/:id', (req, res) => {
 action.get('/getAllProducts', async (req, res) => {
     try {
         const productsData = await modelProducts.find();
+        const inventoryData = await modelInventory.find();
+
+        var minQty;
+
+        for (const product of productsData) {
+            let articles = [];
+            articles.push(product.contain_articles);
+            for (const article of articles) {
+                console.log(article);
+            }
+
+
+
+        }
+
+
+
+        //        const productsStock = getProductStock(productsData, inventoryData);
         res.json(productsData);
     } catch (error) {
-        res.status(500).json({message: error.message})
+        res.status(500).json({ message: error.message })
     }
 })
 
@@ -30,7 +48,7 @@ action.get('/getAllInventory', async (req, res) => {
         const inventoryData = await modelInventory.find();
         res.json(inventoryData);
     } catch (error) {
-        res.status(500).json({message: error.message})
+        res.status(500).json({ message: error.message })
     }
 })
 
