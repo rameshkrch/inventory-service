@@ -20,23 +20,16 @@ action.get('/getAllProducts', async (req, res) => {
         const productsData = await modelProducts.find();
         const inventoryData = await modelInventory.find();
 
-        var minQty;
-
-        for (const product of productsData) {
-            let articles = [];
-            articles.push(product.contain_articles);
-            for (const article of articles) {
-                console.log(article);
+        let minQty = [];
+        for (let product of productsData) {
+            let qty = [];
+            for (const article of product.contain_articles) {
+                let findArticle = inventoryData.find(o => o.art_id == article.art_id);
+                qty.push(Math.floor(findArticle.stock/article.amount_of));
             }
-
-
-
+            minQty.push(product.name + ' : ' + Math.min(...qty));
         }
-
-
-
-        //        const productsStock = getProductStock(productsData, inventoryData);
-        res.json(productsData);
+        res.json(minQty);
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
