@@ -5,8 +5,26 @@ const modelInventory = require('../models/schemaInventory');
 const modelProducts = require('../models/schemaProduct');
 
 //Sell product
-action.patch('/sell/:id', (req, res) => {
-    res.send('Update by ID API')
+action.put('/sell/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const product = await modelProducts.findById(id);
+        const inventory = await modelInventory.find();
+        for (let article of product.contain_articles) {
+            let query = { art_id: article.art_id};
+            let options = {useFindAndModify: false, new: true};
+
+            let findArticle = inventory.find(o => o.art_id == article.art_id);
+            let newQty = findArticle.stock - article.amount_of;
+
+            modelInventory.findOneAndUpdate(query, { stock: newQty}, options, (err, result) => {
+                if (err) return err
+            })
+        }
+        res.send(product.name + " sold!");
+    } catch (error) {
+        res.status(400).json({ message: error.message})
+    }
 })
 
 //Get single product
